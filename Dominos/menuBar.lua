@@ -49,18 +49,27 @@ local menuButtons = {
 
 local menuButtons
 do
-	local loadButtons = function(...)
-		menuButtons = {}
-		
-		for i = 1, select('#', ...) do
-			local b = select(i, ...)
-			local name = b:GetName()
-			if name and name:match('(%w+)MicroButton$') then
-				table.insert(menuButtons, b)
-			end
-		end
-	end
-	loadButtons(_G['MainMenuBarArtFrame']:GetChildren())
+    local loadButtons = function()
+        local order = {
+            "CharacterMicroButton",
+            "SpellbookMicroButton",
+            "TalentMicroButton",
+            "AchievementMicroButton",
+            "QuestLogMicroButton",
+            "SocialsMicroButton",
+            "PVPMicroButton",
+            "LFDMicroButton",
+            "EncounterJournalMicroButton",
+            "StoreMicroButton",
+            "MainMenuMicroButton",
+        }
+        menuButtons = {}
+        for i = 1, #order do
+            local b = _G[order[i]]
+            if b then table.insert(menuButtons, b) end
+        end
+    end
+    loadButtons()
 end
 
 do
@@ -83,7 +92,7 @@ do
 end
 
 
---[[ Menu Bar ]]--
+-- Menu Bar
 
 local MenuBar = Dominos:CreateClass('Frame', Dominos.Frame)
 Dominos.MenuBar  = MenuBar
@@ -93,7 +102,28 @@ function MenuBar:New()
 	f:LoadButtons()
 	f:Layout()
 
-	return f
+	
+    if UpdateMicroButtons then hooksecurefunc("UpdateMicroButtons", function()
+        local load = _G and type(_G) == 'table' and function()
+            if menuButtons == nil then menuButtons = {} end
+        end or nil
+        if load then load() end
+        if f and f.header then f:LoadButtons(); f:Layout() end
+    end) end
+    if MoveMicroButtons then hooksecurefunc("MoveMicroButtons", function()
+        if f and f.header then f:LoadButtons(); f:Layout() end
+    end) end
+    if VehicleMenuBar_MoveMicroButtons then hooksecurefunc("VehicleMenuBar_MoveMicroButtons", function()
+        if f and f.header then f:LoadButtons(); f:Layout() end
+    end) end
+    if UIParent_ManageFramePositions then hooksecurefunc("UIParent_ManageFramePositions", function()
+        if f and f.header then f:LoadButtons(); f:Layout() end
+    end) end
+    if C_Timer and C_Timer.After then
+        C_Timer.After(0,   function() if f and f.header then f:LoadButtons(); f:Layout() end end)
+        C_Timer.After(0.5, function() if f and f.header then f:LoadButtons(); f:Layout() end end)
+    end
+return f
 end
 
 function MenuBar:GetDefaults()
