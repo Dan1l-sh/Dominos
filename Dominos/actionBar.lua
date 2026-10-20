@@ -278,6 +278,7 @@ ActionBar.conditions = {
 	'[bar:5]',
 	'[bar:6]',
 	'[bonusbar:1,stealth]', --prowl
+	'[form:1]',
 	'[form:2]',
 	'[form:3]',
 	'[bonusbar:1]',
@@ -590,7 +591,7 @@ do
 	--GetSpellInfo(spellID) is awesome for localization
 	local function AddClass(self)
 		local lClass, class = UnitClass('player')
-		if class == 'WARRIOR' or class == 'DRUID' or class == 'PRIEST' or class == 'ROGUE' or class == 'WARLOCK' then
+		if class == 'WARRIOR' or class == 'DRUID' or class == 'PRIEST' or class == 'ROGUE' or class == 'WARLOCK' or class == 'DEMONHUNTER' then
 			local p = self:NewPanel(lClass)
 			if class == 'WARRIOR' then
 				ConditionSlider_New(p, '[bonusbar:3]', GetSpellInfo(2458))
@@ -609,6 +610,8 @@ do
 				ConditionSlider_New(p, '[form:3]', GetSpellInfo(51713))
 			elseif class == 'WARLOCK' then
 				ConditionSlider_New(p, '[form:2]', GetSpellInfo(47241))
+			elseif class == 'DEMONHUNTER' then
+				ConditionSlider_New(p, '[form:1]', GetSpellInfo(191427) or GetSpellInfo(371710))
 			end
 		end
 	end
